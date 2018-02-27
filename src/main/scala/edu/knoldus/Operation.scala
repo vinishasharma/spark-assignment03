@@ -37,7 +37,6 @@ object Operation extends App {
 
   spark.sql("SELECT HomeTeam, count(HomeTeam) As Wins FROM football WHERE FTR = 'H' GROUP BY HomeTeam")
     .createOrReplaceTempView("HomeTeamWins")
-sbt
   spark.sql("SELECT AwayTeam, count(AwayTeam) As Wins FROM football WHERE FTR = 'A' GROUP BY AwayTeam")
     .createOrReplaceTempView("AwayTeamWins")
 
