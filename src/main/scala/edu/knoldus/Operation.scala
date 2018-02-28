@@ -100,9 +100,9 @@ class Operation {
     val homeDataFrame = footballDataSet.select("HomeTeam", "FTR").where("FTR = 'H'").groupBy("HomeTeam").count().withColumnRenamed("count", "HomeWins")
     val awayTeamDataFrame = footballDataSet.select("AwayTeam", "FTR").where("FTR = 'A'").groupBy("AwayTeam").count().withColumnRenamed("count", "AwayWins")
     val teamsDataFrame = homeDataFrame.join(awayTeamDataFrame, homeDataFrame.col("HomeTeam") === awayTeamDataFrame.col("AwayTeam"))
-    val addMatches: (Int, Int) => Int = (HomeMatches: Int, TeamMatches: Int) => HomeMatches + TeamMatches
-    val total = udf(addMatches)
-    teamsDataFrame.withColumn("TotalWins", total(col("HomeWins"), col("AwayWins"))).select("HomeTeam", "TotalWins")
+    val addMatchesForHomeAndAway: (Int, Int) => Int = (HomeMatches: Int, TeamMatches: Int) => HomeMatches + TeamMatches
+    val totalMatches = udf(addMatchesForHomeAndAway)
+    teamsDataFrame.withColumn("TotalWins", totalMatches(col("HomeWins"), col("AwayWins"))).select("HomeTeam", "TotalWins")
       .withColumnRenamed("HomeTeam", "Team").sort(desc("TotalWins")).limit(10)
   }
 }
